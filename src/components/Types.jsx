@@ -25,6 +25,20 @@ export default function Types() {
             },
           })
         })
+        if (conditions.isMobile && !conditions.reduceMotion) {
+          // на телефоне блик ведёт прокрутка
+          gsap.utils.toArray('[data-sheen-scroll]').forEach((node) => {
+            gsap.fromTo(
+              node,
+              { '--mx': '8%' },
+              {
+                '--mx': '92%',
+                ease: 'none',
+                scrollTrigger: { trigger: node, start: 'top 95%', end: 'bottom 5%', scrub: 0.4 },
+              },
+            )
+          })
+        }
         if (conditions.isDesktop && !conditions.reduceMotion) {
           gsap.fromTo(
             '[data-type-stage]',
@@ -40,6 +54,21 @@ export default function Types() {
     },
     { scope: root },
   )
+
+  const moveLight = (event) => {
+    const box = event.currentTarget.getBoundingClientRect()
+    gsap.to(event.currentTarget, {
+      '--mx': `${((event.clientX - box.left) / box.width) * 100}%`,
+      // блик остаётся на потолке — верхней трети кадра
+      '--my': `${6 + ((event.clientY - box.top) / box.height) * 26}%`,
+      '--on': 1,
+      duration: 0.5,
+      ease: 'power3.out',
+      overwrite: true,
+    })
+  }
+  const dimLight = (event) => gsap.to(event.currentTarget, { '--on': 0.35, duration: 0.8, overwrite: 'auto' })
+  const current = CEILINGS.find((item) => item.id === active)
 
   return (
     <section ref={root} id="types" className="relative bg-graphite py-20 text-plaster md:py-32">
@@ -71,8 +100,9 @@ export default function Types() {
                     </span>
                     <span className="mt-3 block max-w-[30rem] text-[0.9375rem] text-plaster/65">{item.text}</span>
                   </button>
-                  <div className="mb-7 ml-6 aspect-[16/10] overflow-hidden md:hidden">
+                  <div className="relative mb-7 ml-6 aspect-[16/10] overflow-hidden md:hidden">
                     {!isDesktop && <Photo slot={item.id} className="h-full w-full object-cover" label={`${item.name} потолок`} />}
+                    <div aria-hidden="true" data-sheen-scroll className={`sheen sheen-${item.id}`} />
                   </div>
                 </li>
               )
@@ -84,7 +114,11 @@ export default function Types() {
           </ul>
 
           <div className="hidden md:col-span-6 md:block lg:col-span-6 lg:col-start-7">
-            <div className="sticky top-28 aspect-[4/5] max-h-[calc(100vh-9rem)] w-full overflow-hidden">
+            <div
+              onPointerMove={moveLight}
+              onPointerLeave={dimLight}
+              className="sheen-stage sticky top-28 aspect-[4/5] max-h-[calc(100vh-9rem)] w-full overflow-hidden"
+            >
               <div data-type-stage className="absolute inset-[-5%_0] will-change-transform">
                 {CEILINGS.map((item) => (
                   <div key={item.id} className={`type-preview ${active === item.id ? 'is-on' : ''}`}>
@@ -92,6 +126,10 @@ export default function Types() {
                   </div>
                 ))}
               </div>
+              <div aria-hidden="true" className={`sheen sheen-${active}`} />
+              <p className="spec pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-graphite/85 to-transparent px-5 pb-4 pt-12 text-[0.8125rem] text-plaster/80">
+                Ведите курсором — свет на полотне: {current.sheen}
+              </p>
             </div>
           </div>
         </div>

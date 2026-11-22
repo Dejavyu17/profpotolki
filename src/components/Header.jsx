@@ -31,6 +31,7 @@ export default function Header() {
           {phone.label}
         </a>
       </div>
+      <span aria-hidden="true" data-scroll-line className="scroll-line" />
     </header>
   )
 }

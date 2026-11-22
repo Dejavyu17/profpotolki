@@ -142,6 +142,24 @@ p {
   color: var(--color-led-glow);
 }
 
+.scroll-line {
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: 1px;
+  background: var(--color-led-glow);
+  box-shadow:
+    0 0 10px 1px rgb(243 217 164 / 0.85),
+    0 0 30px 3px rgb(229 194 135 / 0.4);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.site-header.is-solid .scroll-line {
+  opacity: 1;
+}
+
 /* ───── Свет ───── */
 .hero-line {
   box-shadow:
@@ -149,8 +167,95 @@ p {
     0 0 46px 6px rgba(229, 194, 135, 0.45);
 }
 
+.hero-line {
+  opacity: calc(0.25 + var(--lit, 0.5) * 0.75);
+}
+
 .hero-wash {
-  background: linear-gradient(to bottom, rgba(229, 194, 135, 0.2), rgba(229, 194, 135, 0));
+  background: linear-gradient(to bottom, rgba(229, 194, 135, 0.26), rgba(229, 194, 135, 0));
+  opacity: var(--lit, 0.5);
+}
+
+.hero-lit-line {
+  opacity: var(--lit-line, 1);
+}
+
+.hero-lit-full {
+  opacity: var(--lit-full, 0);
+}
+
+/* чем ярче комната, тем плотнее подложка под заголовком */
+.hero-shade {
+  background: linear-gradient(
+    to top,
+    rgb(13 14 16 / 0.96) 0%,
+    rgb(13 14 16 / calc(0.5 + var(--lit-full, 0) * 0.22)) 46%,
+    rgb(13 14 16 / calc(0.2 + var(--lit-full, 0) * 0.1)) 100%
+  );
+}
+
+/* ───── Диммер ───── */
+.dimmer {
+  padding: 0.9rem 1rem 0.75rem;
+  background: rgb(13 14 16 / 0.55);
+  border: 1px solid var(--line-light);
+  border-radius: var(--radius-arch);
+  backdrop-filter: blur(10px);
+}
+
+.dimmer input[type='range'] {
+  display: block;
+  width: 100%;
+  height: 2.75rem;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+
+.dimmer input[type='range']::-webkit-slider-runnable-track {
+  height: 2px;
+  background: linear-gradient(to right, var(--color-led-glow) var(--fill), var(--line-light) var(--fill));
+  box-shadow: 0 0 calc(var(--lit, 0.5) * 18px) calc(var(--lit, 0.5) * 2px) rgb(229 194 135 / 0.55);
+}
+
+.dimmer input[type='range']::-moz-range-track {
+  height: 2px;
+  background: linear-gradient(to right, var(--color-led-glow) var(--fill), var(--line-light) var(--fill));
+}
+
+.dimmer input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  width: 0.875rem;
+  height: 2rem;
+  margin-top: calc(-1rem + 1px);
+  background: var(--color-led);
+  border: 1px solid var(--color-graphite);
+  border-radius: var(--radius-arch);
+  box-shadow: 0 0 calc(6px + var(--lit, 0.5) * 22px) rgb(243 217 164 / calc(0.2 + var(--lit, 0.5) * 0.6));
+}
+
+.dimmer input[type='range']::-moz-range-thumb {
+  width: 0.875rem;
+  height: 2rem;
+  background: var(--color-led);
+  border: 1px solid var(--color-graphite);
+  border-radius: var(--radius-arch);
+}
+
+.dimmer-stop {
+  min-height: 2.75rem;
+  padding: 0.5rem 0;
+  font-size: 0.8125rem;
+  color: rgb(244 241 236 / 0.55);
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.dimmer-stop:hover,
+.dimmer-stop.is-on {
+  color: var(--color-led-glow);
 }
 
 .edge-light {
@@ -254,6 +359,68 @@ p {
 .type-preview.is-on {
   opacity: 1;
   transform: none;
+}
+
+/* Блик, который ходит за курсором: у каждой фактуры свой характер отражения */
+@property --mx {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 62%;
+}
+
+@property --my {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 18%;
+}
+
+@property --on {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0.35;
+}
+
+.sheen-stage {
+  cursor: crosshair;
+}
+
+.sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: var(--on);
+  -webkit-mask-image: linear-gradient(#000 30%, transparent 52%);
+  mask-image: linear-gradient(#000 30%, transparent 52%);
+  transition: background 0.5s ease;
+}
+
+.sheen-matte {
+  background: radial-gradient(70% 55% at var(--mx) var(--my), rgb(243 217 164 / 0.22), transparent 70%);
+}
+
+.sheen-satin {
+  background:
+    radial-gradient(34% 12% at var(--mx) var(--my), rgb(255 240 210 / 0.34), transparent 70%),
+    radial-gradient(60% 42% at var(--mx) var(--my), rgb(243 217 164 / 0.26), transparent 72%);
+}
+
+.sheen-gloss {
+  background:
+    radial-gradient(7% 5% at var(--mx) var(--my), rgb(255 250 235 / 0.95), transparent 70%),
+    radial-gradient(22% 14% at var(--mx) var(--my), rgb(255 236 196 / 0.5), transparent 70%),
+    radial-gradient(55% 38% at var(--mx) var(--my), rgb(243 217 164 / 0.2), transparent 72%);
+}
+
+.sheen-shadow {
+  background: radial-gradient(48% 36% at var(--mx) var(--my), rgb(243 217 164 / 0.26), transparent 70%);
+}
+
+@media (max-width: 768px) {
+  .sheen {
+    --my: 16%;
+    --on: 1;
+  }
 }
 
 /* ───── Калькулятор ───── */

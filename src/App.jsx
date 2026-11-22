@@ -29,6 +29,12 @@ export default function App() {
           toggleClass: { targets: '[data-header]', className: 'is-solid' },
         })
         if (conditions.reduceMotion) return
+        // световая линия под шапкой растёт вместе с прокруткой страницы
+        gsap.fromTo(
+          '[data-scroll-line]',
+          { scaleX: 0 },
+          { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } },
+        )
         const items = gsap.utils.toArray('[data-reveal]')
         gsap.set(items, { autoAlpha: 0, y: conditions.isDesktop ? 36 : 20 })
         ScrollTrigger.batch(items, {

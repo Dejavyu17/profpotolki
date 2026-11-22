@@ -2,6 +2,8 @@
 // Сейчас в слотах сгенерированные иллюстрации интерьеров, а не фотографии работ компании.
 // Чтобы подставить свой снимок: положите файл в src/assets/photos и замените импорт.
 import hero from './assets/photos/hero.webp'
+import heroOff from './assets/photos/hero-off.webp'
+import heroFull from './assets/photos/hero-full.webp'
 import matte from './assets/photos/matte.webp'
 import satin from './assets/photos/satin.webp'
 import gloss from './assets/photos/gloss.webp'
@@ -12,6 +14,8 @@ const size = { width: 1536, height: 1024 }
 
 export const PHOTOS = {
   hero: { src: hero, ...size, alt: 'Гостиная с матовым натяжным потолком и тёплой световой линией' },
+  heroOff: { src: heroOff, ...size, alt: '' },
+  heroFull: { src: heroFull, ...size, alt: '' },
   matte: { src: matte, ...size, alt: 'Спальня с матовым натяжным потолком и точечными светильниками' },
   satin: { src: satin, ...size, alt: 'Гостиная с сатиновым натяжным потолком и мягким отсветом' },
   gloss: { src: gloss, ...size, alt: 'Гостиная с глянцевым натяжным потолком, в котором отражается комната' },
