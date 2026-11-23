@@ -11,7 +11,11 @@ export default function LeadForm({ details, submitLabel = 'Вызвать зам
   async function onSubmit(event) {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
-    const lead = { name: String(data.get('name') ?? ''), phone: String(data.get('phone') ?? '') }
+    const lead = {
+      name: String(data.get('name') ?? ''),
+      phone: String(data.get('phone') ?? ''),
+      consent: data.get('consent') === 'on',
+    }
     const found = validateLead(lead)
     setErrors(found)
     const first = Object.keys(found)[0]
@@ -21,7 +25,7 @@ export default function LeadForm({ details, submitLabel = 'Вызвать зам
     }
     setStatus('sending')
     try {
-      await submitLead({ ...lead, details })
+      await submitLead({ ...lead, consentAt: new Date().toISOString(), details })
       setStatus('done')
     } catch {
       setStatus('failed')
@@ -81,6 +85,31 @@ export default function LeadForm({ details, submitLabel = 'Вызвать зам
         {errors.phone ? (
           <p id={`${id}-phone-error`} className="field-error">
             {errors.phone}
+          </p>
+        ) : null}
+      </div>
+      <div>
+        <label className={`consent ${dark ? 'consent-dark' : ''}`}>
+          <input
+            name="consent"
+            type="checkbox"
+            aria-invalid={Boolean(errors.consent)}
+            aria-describedby={errors.consent ? `${id}-consent-error` : undefined}
+          />
+          <span>
+            Согласен на{' '}
+            <a href="./consent.html" target="_blank" rel="noopener">
+              обработку персональных данных
+            </a>{' '}
+            по{' '}
+            <a href="./privacy.html" target="_blank" rel="noopener">
+              политике конфиденциальности
+            </a>
+          </span>
+        </label>
+        {errors.consent ? (
+          <p id={`${id}-consent-error`} className="field-error">
+            {errors.consent}
           </p>
         ) : null}
       </div>

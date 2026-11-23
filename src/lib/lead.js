@@ -14,10 +14,11 @@ export async function submitLead(payload) {
 
 const DIGITS = /\D/g
 
-export function validateLead({ name, phone }) {
+export function validateLead({ name, phone, consent }) {
   const errors = {}
   if (name.trim().length < 2) errors.name = 'Напишите, как к вам обращаться'
   const digits = phone.replace(DIGITS, '')
   if (digits.length < 10 || digits.length > 12) errors.phone = 'Укажите телефон целиком, например +7 900 000-00-00'
+  if (!consent) errors.consent = 'Отметьте согласие — без него мы не вправе вам перезвонить'
   return errors
 }

@@ -17,6 +17,14 @@ export default function Footer() {
           ))}
         </p>
       </div>
+      <div className="shell mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-[var(--line-light)] pt-6 text-[0.8125rem]">
+        <a href="./privacy.html" className="nav-link">
+          Политика конфиденциальности
+        </a>
+        <a href="./consent.html" className="nav-link">
+          Согласие на обработку персональных данных
+        </a>
+      </div>
     </footer>
   )
 }
